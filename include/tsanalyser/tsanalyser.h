@@ -32,10 +32,6 @@ void setDebugOption(int argc, char *argv[]);
  * @brief      Starts keeping time.
  */
 extern void startKeepingTime();
-/**
- * @brief      Ends time keeping.
- */
-extern void endKeepingTime();
 
 /**
  * @brief      Gets the time report by taking a difference between start and 
