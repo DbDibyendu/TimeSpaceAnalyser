@@ -39,15 +39,63 @@ add_custom_target(build_clean
 
 # Uninstall command
 add_custom_target(uninstall
-	COMMAND xargs rm < install_manifest.txt 
+	COMMAND xargs rm < install_manifest.txt
 	COMMAND rm -rf ${CMAKE_INSTALL_INCLUDEDIR}/tsanalyser)
 
 # Add test cases to test the library
 add_custom_target(libtest
-	COMMAND echo "Test 1 Start!"	
+	COMMAND echo "Test 1 Start!"
 	COMMAND ${CMAKE_CURRENT_BINARY_DIR}/tstest
 	COMMAND echo "Test 1 Done!"
 	COMMAND echo "Test 2 Start!"
 	COMMAND ${CMAKE_CURRENT_BINARY_DIR}/tstest -d
 	COMMAND echo "Test 2 Done!"
+)
+
+# Add swig subdirectory
+#add_subdirectory(swig)
+
+#############################################################################
+# Swig Config
+#############################################################################
+
+FIND_PACKAGE(SWIG REQUIRED)
+INCLUDE(${SWIG_USE_FILE})
+
+FIND_PACKAGE(PythonLibs)
+INCLUDE_DIRECTORIES(${PYTHON_INCLUDE_PATH})
+
+set(CMAKE_SWIG_FLAGS "")
+
+SET_SOURCE_FILES_PROPERTIES(SOURCE wrappers/tsanalyser.i PROPERTY CPLUSPLUS ON)
+SET_SOURCE_FILES_PROPERTIES(SOURCE wrappers/tsanalyser.i PROPERTY SWIG_FLAGS "-includeall")
+
+SWIG_ADD_MODULE(tsanalyser python wrappers/tsanalyser.i ${SRC})
+SWIG_LINK_LIBRARIES(tsanalyser ${PYTHON_LIBRARIES})
+
+SET_TARGET_PROPERTIES(_tsanalyser PROPERTIES OUTPUT_NAME _${PROJECT_NAME})
+
+#INSTALL(TARGETS _python DESTINATION ${INCLUDE_INSTALL_DIR}/python)
+#INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}/${PROJECT_NAME}.py DESTINATION ${INCLUDE_INSTALL_DIR}/python)
+
+set(PYTHON_INSTALL_FILES
+        ${CMAKE_CURRENT_BINARY_DIR}/tsanalyser.py
+        ${CMAKE_CURRENT_BINARY_DIR}/_tsanalyser.so)
+
+# Configure setup.py and copy to output directory
+set(SETUP_PY_IN ${CMAKE_CURRENT_SOURCE_DIR}/wrappers/setup.py.in)
+set(SETUP_PY_OUT ${CMAKE_CURRENT_BINARY_DIR}/setup.py)
+configure_file(${SETUP_PY_IN} ${SETUP_PY_OUT})
+
+# Declare install target for python
+#install(TARGETS swig_example
+#        COMMAND "${PYTHON_EXECUTABLE} setup.py"
+#        COMPONENT swig-python)
+
+# Install target to call setup.py
+
+add_custom_target(pyinstall
+        DEPENDS _tsanalyser
+        COMMAND python ${SETUP_PY_OUT} install
+	COMMAND python3 ${SETUP_PY_OUT} install
 )
