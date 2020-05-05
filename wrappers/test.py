@@ -1,0 +1,2 @@
+import tsanalyser
+tsanalyser.getTSAnlaysis()
