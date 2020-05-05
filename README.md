@@ -2,20 +2,6 @@
 
 Library is made to analyse time and memory taken by a program.
 
-## Installation
-1. Clone this repository
-```sh
-git clone https://gitlab.iotiot.in/shunya/time-space-analyser.git
-```
-2. Install library
-```sh
-cd time-space-analyser
-mkdir build && cd build
-cmake ..
-make
-sudo make install
-```
-
 ## Example Program
 
 ```c
@@ -58,6 +44,18 @@ int main(int argc, char *argv[])
 }
 
 
+```
+
+
+## Installation
+1. Clone this repository
+```sh
+git clone https://gitlab.iotiot.in/shunya/time-space-analyser.git
+```
+2. Build and Install library
+```sh
+cd time-space-analyser
+./scripts/build.sh
 ```
 
 ## How to Compile the Example
