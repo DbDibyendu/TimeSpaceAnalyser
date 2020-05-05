@@ -26,12 +26,14 @@ add_executable(tstest tests/test.c)
 
 TARGET_LINK_LIBRARIES(tstest ${PROJECT_NAME})
 
+set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "include/tsanalyser/tsanalyser.h")
+
 # Set correct Install directories
 install(TARGETS ${PROJECT_NAME} EXPORT ${PROJECT_NAME}Config
 	ARCHIVE  DESTINATION ${CMAKE_INSTALL_LIBDIR}
 	LIBRARY  DESTINATION ${CMAKE_INSTALL_LIBDIR}
 	RUNTIME  DESTINATION ${CMAKE_INSTALL_BINDIR}
-	PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+	PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/tsanalyser)
 
 # Build clean command
 add_custom_target(build_clean
