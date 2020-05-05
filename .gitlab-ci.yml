@@ -4,7 +4,7 @@ build:armv7:
   image: shunyaos/shunya-armv7:v0.1
   script:
     - opkg update
-    - opkg install cmake
+    - opkg install cmake swig 
     - mkdir build 
     - cd build
     - cmake ../

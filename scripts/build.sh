@@ -1,3 +1,4 @@
+apt-get install -y swig cmake
 rm -rf build
 mkdir build && cd build 
 cmake ../
