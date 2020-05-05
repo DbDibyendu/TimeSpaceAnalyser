@@ -11,14 +11,14 @@ build:armv7:
     - make
     - make libtest  
 
-build:armv8:
-  image: shunyaos/shunya-armv8:v0.1
-  script:
-    - opkg update
-    - opkg install cmake 
-    - mkdir build 
-    - cd build
-    - cmake ../
-    - make 
-    - make libtest
+# build:armv8:
+#   image: shunyaos/shunya-armv8:v0.1
+#   script:
+#     - opkg update
+#     - opkg install cmake 
+#     - mkdir build 
+#     - cd build
+#     - cmake ../
+#     - make 
+#     - make libtest
 
