@@ -15,34 +15,11 @@
 #include <time.h>
 #include "tsanalyser/tsanalyser.h"
 
-//TODO: Write to Log function which writes the print output to log
+//TODO: Write to Log function which writes the print output to log 
 
 /* Global variable to store the start time value*/
-static clock_t begin;
+static clock_t begin; 
 
-/* Global variable to store the mode */
-static int8_t mode; 
-
-/**
- * @brief      Debug option for the library
- *
- * @param[in]  argc  The count of arguments
- * @param      argv  The arguments array
- */
-void setDebugOption(int argc, char *argv[])
-{
-        int opt;
-
-        while ((opt = getopt(argc, argv, "d")) != -1) {
-                switch (opt) {
-                        case 'd': 
-                                mode = DEBUG_MODE; 
-                                break;
-                        default:
-                            fprintf(stderr, "Usage: %s [-d] for turning on Debug mode.\n", argv[0]);
-                }
-        }        
-}
 
 /**
  * @brief      Starts keeping time.
@@ -60,15 +37,16 @@ void startKeepingTime()
  *
  * @return     time in seconds.
  */
-float getTimeTaken()
+float getTimeTaken(int8_t mode)
 {
 
-        clock_t end = clock();
+	clock_t end = clock();
 
-        if (DEBUG_MODE == mode) {
-                printf("Total Time Taken: %f secs \n", (float)(end - begin) / CLOCKS_PER_SEC);               
-        }
-        return (float)(end - begin) / CLOCKS_PER_SEC; 
+	if (DEBUG_MODE == mode) {
+		printf("Total Time Taken: %f secs \n", 
+				(float)(end - begin) / CLOCKS_PER_SEC);               
+	}
+	return (float)(end - begin) / CLOCKS_PER_SEC; 
 }
 
 /**
@@ -76,7 +54,7 @@ float getTimeTaken()
  *
  * @return     Current RAM usage in bytes.
  */
-size_t getCurrentRSS( )
+size_t getCurrentRSS(int8_t mode)
 {
 	long rss = 0L;
 	FILE* fp = NULL;
@@ -88,6 +66,10 @@ size_t getCurrentRSS( )
 		return (size_t)0L;      /* Can't read? */
 	}
 	fclose( fp );
+	if (DEBUG_MODE == mode) {
+		printf("Instantenous RAM (memory) usage: %ld MB \n", 
+			(size_t)rss * (size_t)sysconf( _SC_PAGESIZE)/1024);
+	} 
 	return (size_t)rss * (size_t)sysconf( _SC_PAGESIZE);
 }
 
@@ -98,22 +80,22 @@ size_t getCurrentRSS( )
  *             The function uses getrusage() linux function
  *             http://man7.org/linux/man-pages/man2/getrusage.2.html
  */     
-void getTSAnlaysis()
+void getTSAnlaysis(int8_t mode)
 {
-        struct rusage rusage;
-        struct timeval  user, sys;
+	struct rusage rusage;
+	struct timeval  user, sys;
 
-        getrusage( RUSAGE_SELF, &rusage );
+	getrusage( RUSAGE_SELF, &rusage );
 
-        user = rusage.ru_utime;
-        sys = rusage.ru_stime;
+	user = rusage.ru_utime;
+	sys = rusage.ru_stime;
 
-        double utime = (double)(user.tv_usec) / 1000000 + (double) (user.tv_sec);
-        double stime = (double)(sys.tv_usec) / 1000000 + (double) (sys.tv_sec);
+	double utime = (double)(user.tv_usec) / 1000000 + (double) (user.tv_sec);
+	double stime = (double)(sys.tv_usec) / 1000000 + (double) (sys.tv_sec);
 
-        if (DEBUG_MODE == mode) {
-                printf("Peak RAM (memory) usage: %ld KB \n", (ssize_t) rusage.ru_maxrss);
-                printf("Total CPU Time Used: %f secs \n", (float) utime + stime);               
-        } 
+	if (DEBUG_MODE == mode) {
+		printf("Peak RAM (memory) usage: %ld MB \n", (ssize_t) rusage.ru_maxrss/1024);
+		printf("Total CPU Time Used: %f secs \n", (float) utime + stime);               
+	} 
 
 }

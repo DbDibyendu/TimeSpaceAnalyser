@@ -20,13 +20,7 @@ extern "C" {
 
 #define DEBUG_MODE 100
 
-/**
- * @brief      Debug option for the library
- *
- * @param[in]  argc  The count of arguments
- * @param      argv  The arguments array
- */
-void setDebugOption(int argc, char *argv[]);
+#include <stdint.h>
 
 /**
  * @brief      Starts keeping time.
@@ -39,14 +33,14 @@ extern void startKeepingTime();
  *
  * @return     time in seconds.
  */
-extern float getTimeTaken();
+extern float getTimeTaken(int8_t mode);
 
 /**
  * @brief      Returns the current RAM usage of the program
  *
  * @return     Current RAM usage in bytes.
  */
-extern size_t getCurrentRSS( );
+extern size_t getCurrentRSS(int8_t mode);
 
 /**
  * @brief      Prints a Report on Max RAM used by program and Total CPU time 
@@ -55,7 +49,7 @@ extern size_t getCurrentRSS( );
  *             The function uses getrusage() linux function
  *             http://man7.org/linux/man-pages/man2/getrusage.2.html
  */     
-extern void getTSAnlaysis();
+extern void getTSAnlaysis(int8_t mode);
 
 #ifdef __cplusplus
 }
