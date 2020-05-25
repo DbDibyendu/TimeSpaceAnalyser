@@ -35,10 +35,10 @@ int main(int argc, char *argv[])
         /* End Keeping time after the loop 
          * Since we want to measure the time taken by the loop.
          */
-        getTimeTaken();
+        getTimeTaken(DEBUG_MODE);
 
         /*Print total time taken and total RAM usage*/
-        getTSAnlaysis();
+        getTSAnlaysis(DEBUG_MODE);
 
         return 0;
 }
@@ -80,6 +80,9 @@ gcc -o example example.c -ltsanalyser
 
 **Description** : Prints, Peak RAM used in KB and Total CPU time taken in secs by the program
 
+**Parameter** :
+- mode(int8_t) - Flag when set to DEBUG_MODE will print the information and when set to 0 will not print the information.
+
 **Return-type** : void
 
 **Usage** : getTSAnalysis();
@@ -100,28 +103,16 @@ gcc -o example example.c -ltsanalyser
 
 **Description** : Gets the Total time Taken from start time
 
+**Parameter** :
+- mode(int8_t) - Flag when set to DEBUG_MODE will print the Time Taken and when set to 0 will not print the time.
+
+
 **Return-type** : float
 
 **Returns** : (float) Time taken from start till now in seconds.
 
 **Usage** : getTimeTaken();
 
----
-
-### `setDebugOption()`
-
-**Description** : Adds the debug option to the program, i.e library will print only if -d option is added while running the program.
-
-**Parameter** :
-- argc - The count of arguments passed from main()
-- argv - The arguments array passed from main()
-
-
-**Return-type** : void
-
-**Usage** : startKeepingTime();
-
----
 
 ## Features Coming Soon
 

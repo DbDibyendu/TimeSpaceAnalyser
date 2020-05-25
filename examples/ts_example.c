@@ -9,8 +9,6 @@
 
 int main(int argc, char *argv[])
 {
-        setDebugOption(argc,argv);
-
         /* Example array*/
         double tp[2048];
         
@@ -35,10 +33,10 @@ int main(int argc, char *argv[])
         /* End Keeping time after the loop 
          * Since we want to measure the time taken by the loop.
          */
-        getTimeTaken();
+        getTimeTaken(DEBUG_MODE);
 
         /*Print total time taken and total RAM usage*/
-        getTSAnlaysis();
+        getTSAnlaysis(DEBUG_MODE);
 
         return 0;
 }
