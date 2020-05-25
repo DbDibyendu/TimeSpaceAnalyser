@@ -4,9 +4,11 @@ cmake_minimum_required(VERSION 3.5)
 # Declare the Project version and the Language that the project is written in
 project(tsanalyser VERSION 1.0.0 LANGUAGES C)
 
+option(BUILD_PY "Build Python wrappers for the library" OFF)
+
 SET(SRC
 	src/tsanalyser.c
-)
+	)
 
 # Global Install Directories
 include(GNUInstallDirs)
@@ -18,8 +20,8 @@ add_library(${PROJECT_NAME} SHARED ${SRC})
 # Set the properties of the Shared object file that is going to be created
 # The line below names the .so file aptly
 set_target_properties(${PROJECT_NAME} PROPERTIES
-    VERSION ${PROJECT_VERSION}
-    SOVERSION 1)
+	VERSION ${PROJECT_VERSION}
+	SOVERSION 1)
 
 # Add rules to create the binary files
 add_executable(tstest tests/test.c)
@@ -52,52 +54,44 @@ add_custom_target(libtest
 	COMMAND echo "Test 2 Start!"
 	COMMAND ${CMAKE_CURRENT_BINARY_DIR}/tstest -d
 	COMMAND echo "Test 2 Done!"
-)
+	)
 
-# Add swig subdirectory
-#add_subdirectory(swig)
 
 #############################################################################
 # Swig Config
 #############################################################################
 
-FIND_PACKAGE(SWIG REQUIRED)
-INCLUDE(${SWIG_USE_FILE})
+if(BUILD_PY)
+	FIND_PACKAGE(SWIG REQUIRED)
+	INCLUDE(${SWIG_USE_FILE})
 
-FIND_PACKAGE(PythonLibs)
-INCLUDE_DIRECTORIES(${PYTHON_INCLUDE_PATH})
+	FIND_PACKAGE(PythonLibs)
+	INCLUDE_DIRECTORIES(${PYTHON_INCLUDE_PATH})
 
-set(CMAKE_SWIG_FLAGS "")
+	set(CMAKE_SWIG_FLAGS "")
 
-SET_SOURCE_FILES_PROPERTIES(SOURCE wrappers/tsanalyser.i PROPERTY CPLUSPLUS ON)
-SET_SOURCE_FILES_PROPERTIES(SOURCE wrappers/tsanalyser.i PROPERTY SWIG_FLAGS "-includeall")
+	SET_SOURCE_FILES_PROPERTIES(SOURCE wrappers/tsanalyser.i PROPERTY CPLUSPLUS ON)
+	SET_SOURCE_FILES_PROPERTIES(SOURCE wrappers/tsanalyser.i PROPERTY SWIG_FLAGS "-includeall")
 
-SWIG_ADD_MODULE(tsanalyser python wrappers/tsanalyser.i ${SRC})
-SWIG_LINK_LIBRARIES(tsanalyser ${PYTHON_LIBRARIES})
+	SWIG_ADD_MODULE(tsanalyser python wrappers/tsanalyser.i ${SRC})
+	SWIG_LINK_LIBRARIES(tsanalyser ${PYTHON_LIBRARIES})
 
-SET_TARGET_PROPERTIES(_tsanalyser PROPERTIES OUTPUT_NAME _${PROJECT_NAME})
+	SET_TARGET_PROPERTIES(_tsanalyser PROPERTIES OUTPUT_NAME _${PROJECT_NAME})
 
-#INSTALL(TARGETS _python DESTINATION ${INCLUDE_INSTALL_DIR}/python)
-#INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}/${PROJECT_NAME}.py DESTINATION ${INCLUDE_INSTALL_DIR}/python)
+	set(PYTHON_INSTALL_FILES
+		${CMAKE_CURRENT_BINARY_DIR}/tsanalyser.py
+		${CMAKE_CURRENT_BINARY_DIR}/_tsanalyser.so)
 
-set(PYTHON_INSTALL_FILES
-        ${CMAKE_CURRENT_BINARY_DIR}/tsanalyser.py
-        ${CMAKE_CURRENT_BINARY_DIR}/_tsanalyser.so)
+	# Configure setup.py and copy to output directory
+	set(SETUP_PY_IN ${CMAKE_CURRENT_SOURCE_DIR}/wrappers/setup.py.in)
+	set(SETUP_PY_OUT ${CMAKE_CURRENT_BINARY_DIR}/setup.py)
+	configure_file(${SETUP_PY_IN} ${SETUP_PY_OUT})
 
-# Configure setup.py and copy to output directory
-set(SETUP_PY_IN ${CMAKE_CURRENT_SOURCE_DIR}/wrappers/setup.py.in)
-set(SETUP_PY_OUT ${CMAKE_CURRENT_BINARY_DIR}/setup.py)
-configure_file(${SETUP_PY_IN} ${SETUP_PY_OUT})
+	# Install target to call setup.py
+	add_custom_target(pyinstall
+		DEPENDS _tsanalyser
+		COMMAND python ${SETUP_PY_OUT} install
+		COMMAND python3 ${SETUP_PY_OUT} install
+		)
 
-# Declare install target for python
-#install(TARGETS swig_example
-#        COMMAND "${PYTHON_EXECUTABLE} setup.py"
-#        COMPONENT swig-python)
-
-# Install target to call setup.py
-
-add_custom_target(pyinstall
-        DEPENDS _tsanalyser
-        COMMAND python ${SETUP_PY_OUT} install
-	COMMAND python3 ${SETUP_PY_OUT} install
-)
+endif(BUILD_PY)
