@@ -53,9 +53,15 @@ int main(int argc, char *argv[])
 git clone https://gitlab.iotiot.in/shunya/time-space-analyser.git
 ```
 2. Build and Install library
+**If you code is in C then run these commands** 
 ```sh
 cd time-space-analyser
-./scripts/build.sh
+./scripts/build-c.sh
+```
+**If you code is in python then run these commands** 
+```sh
+cd time-space-analyser
+./scripts/build-py.sh
 ```
 
 ## How to Compile the Example
