@@ -9,4 +9,5 @@
 	#include "../include/tsanalyser/tsanalyser.h" 
 %} 
 
+%include "stdint.i"
 %include "../include/tsanalyser/tsanalyser.h"  
